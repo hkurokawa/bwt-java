@@ -41,14 +41,13 @@ public class SuffixArrayBuilder {
     if (in.length == 1) {
       return new int[] {0};
     }
-    // Increase the size by 1 for the sentinel char ($)
+    // Increase the size by 1 for the sentinel char (0).
     int n = in.length + 1;
     numUniqueChars++;
     int[] input = new int[n];
-    for (int i = 0; i < in.length; i++) {
-      input[i] = in[i] + 1;
-    }
-    input[n - 1] = 0; // the sentinel char ($)
+    // Increase each char by 1 so the sentinel char (0) is the smallest.
+    for (int i = 0; i < in.length; i++) input[i] = in[i] + 1;
+    input[n - 1] = 0; // the sentinel char (0)
 
     // Compute the frequency of the characters
     int[] freq = new int[numUniqueChars];
@@ -56,7 +55,7 @@ public class SuffixArrayBuilder {
 
     // Type of the suffixes (true: S, false: L)
     boolean[] types = new boolean[n];
-    types[n - 1] = true; // The last suffix ("$") is always type S
+    types[n - 1] = true; // The last suffix ("0") is always type S
     for (int i = n - 2; i >= 0; i--) {
       if (input[i] == input[i + 1]) {
         types[i] = types[i + 1];
@@ -131,9 +130,6 @@ public class SuffixArrayBuilder {
   }
 
   static void inducedSort(int n, int[] sa, int[] input, int[] freq, boolean[] types) {
-    boolean[] prefilled = new boolean[sa.length];
-    for (int i = 0; i < sa.length; i++) if (sa[i] >= 0) prefilled[i] = true;
-
     // Fill in the L suffixes
     int[] cstart = new int[freq.length];
     for (int i = 1; i < cstart.length; i++) cstart[i] = cstart[i - 1] + freq[i - 1];
@@ -144,11 +140,12 @@ public class SuffixArrayBuilder {
         int ch = input[sa[i] - 1];
         sa[cstart[ch]] = sa[i] - 1;
         cstart[ch]++;
+        // Clear the SA-value if it is type S for the preparation of the following computation.
+        if (types[sa[i]]) {
+          sa[i] = -1;
+        }
       }
     }
-
-    // Clear the prefilled LMS values
-    for (int i = 0; i < sa.length; i++) if (prefilled[i]) sa[i] = -1;
 
     // Fill in the S suffixes
     int[] cend = new int[freq.length];
