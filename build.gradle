@@ -17,3 +17,9 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+
+tasks.register("testBenchmark", Test) {
+    environment("benchmark", "true")
+    useJUnitPlatform()
+}

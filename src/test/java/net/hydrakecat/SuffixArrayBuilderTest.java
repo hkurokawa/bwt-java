@@ -2,8 +2,8 @@ package net.hydrakecat;
 
 import java.util.Arrays;
 import java.util.Random;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
@@ -76,7 +76,7 @@ class SuffixArrayBuilderTest {
   }
 
   @Test
-  @Disabled
+  @EnabledIfEnvironmentVariable(named = "benchmark", matches = "true")
   public void build_benchmark() {
     Random random = new Random();
     for (int t = 10; t <= 1_000_000; t *= 10) {
