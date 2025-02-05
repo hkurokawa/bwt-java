@@ -17,6 +17,8 @@ public class SuffixArrayBuilder {
    * @return the suffix array for the provided string
    */
   public static int[] build(CharSequence str) {
+    // This takes O(m log(m)) where m is the size of the unique characters in `str`.
+    // Generally, m << n and it can be ignored.
     int[] chars = str.chars().boxed().collect(Collectors.toSet()).stream().mapToInt(i -> i).sorted()
         .toArray();
     Map<Integer, Integer> mapping = new HashMap<>();
@@ -48,7 +50,7 @@ public class SuffixArrayBuilder {
     }
     input[n - 1] = 0; // the sentinel char ($)
 
-    // Compute the cumulative frequency of the characters
+    // Compute the frequency of the characters
     int[] freq = new int[numUniqueChars];
     for (int i : input) freq[i]++;
 
@@ -105,7 +107,7 @@ public class SuffixArrayBuilder {
     }
     int[] lmsSa = suffixArray(lmsStr, lms.size());
 
-    // Put the LMS in the array making sure they are sorted
+    // Put the LMS in the suffix array making sure they are sorted
     sa = new int[n];
     {
       Arrays.fill(sa, -1);
