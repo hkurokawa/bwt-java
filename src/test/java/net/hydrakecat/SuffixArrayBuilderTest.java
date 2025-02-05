@@ -95,14 +95,7 @@ class SuffixArrayBuilderTest {
     }
   }
 
-  private static class Pair implements Comparable<Pair> {
-    final int i;
-    final CharSequence str;
-
-    private Pair(int i, CharSequence str) {
-      this.i = i;
-      this.str = str;
-    }
+  private record Pair(int i, CharSequence str) implements Comparable<Pair> {
 
     @Override public int compareTo(Pair o) {
       return CharSequence.compare(str, o.str);
