@@ -2,6 +2,7 @@ package net.hydrakecat;
 
 import java.util.Arrays;
 import java.util.Random;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -71,6 +72,26 @@ class SuffixArrayBuilderTest {
       } catch (Exception e) {
         throw new RuntimeException("Failed to build suffix array. Input: [" + sb + "]", e);
       }
+    }
+  }
+
+  @Test
+  @Disabled
+  public void build_benchmark() {
+    Random random = new Random();
+    for (int t = 10; t <= 1_000_000; t *= 10) {
+      long sumElapsedTime = 0;
+      for (int i = 0; i < 10; i++) {
+        StringBuilder sb = new StringBuilder();
+        for (int j = 0; j < t; j++) {
+          sb.append((char) (random.nextInt('z' - 'A' + 1) + 'A'));
+        }
+        long start = System.nanoTime();
+        SuffixArrayBuilder.build(sb.toString());
+        long end = System.nanoTime();
+        sumElapsedTime += (end - start);
+      }
+      System.out.printf("%d %f\n", t, (double) sumElapsedTime / 10);
     }
   }
 
