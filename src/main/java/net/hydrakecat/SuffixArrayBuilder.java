@@ -115,7 +115,10 @@ public class SuffixArrayBuilder {
     // Do an induced sorting with the sorted LMS
     inducedSort(n, sa, input, freq, types);
 
-    return sa;
+    // Remove the first element
+    int[] ret = new int[n - 1];
+    System.arraycopy(sa, 1, ret, 0, n - 1);
+    return ret;
   }
 
   static void inducedSort(int n, int[] sa, int[] input, int[] freq, boolean[] types) {
