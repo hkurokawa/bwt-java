@@ -54,15 +54,7 @@ public class SuffixArrayBuilder {
     for (int i : input) freq[i]++;
 
     // Type of the suffixes (true: S, false: L)
-    boolean[] types = new boolean[n];
-    types[n - 1] = true; // The last suffix ("0") is always type S
-    for (int i = n - 2; i >= 0; i--) {
-      if (input[i] == input[i + 1]) {
-        types[i] = types[i + 1];
-      } else {
-        types[i] = input[i] < input[i + 1];
-      }
-    }
+    boolean[] types = types(n, input);
 
     // Find the LMS (Left-Most-S)
     List<Integer> lms = new ArrayList<>();
@@ -74,8 +66,7 @@ public class SuffixArrayBuilder {
     int[] sa = new int[n];
     {
       Arrays.fill(sa, -1);
-      int[] cend = new int[freq.length];
-      for (int i = 1; i < cend.length; i++) cend[i] = cend[i - 1] + freq[i];
+      int[] cend = cend(freq);
       for (int i : lms) {
         int ch = input[i];
         sa[cend[ch]] = i;
@@ -110,8 +101,7 @@ public class SuffixArrayBuilder {
     sa = new int[n];
     {
       Arrays.fill(sa, -1);
-      int[] cend = new int[freq.length];
-      for (int i = 1; i < cend.length; i++) cend[i] = cend[i - 1] + freq[i];
+      int[] cend = cend(freq);
       for (int i = lmsSa.length - 1; i >= 0; i--) {
         int suffix = lms.get(lmsSa[i]);
         int ch = input[suffix];
@@ -129,10 +119,34 @@ public class SuffixArrayBuilder {
     return ret;
   }
 
-  static void inducedSort(int n, int[] sa, int[] input, int[] freq, boolean[] types) {
-    // Fill in the L suffixes
+  private static boolean[] types(int n, int[] input) {
+    boolean[] types = new boolean[n];
+    types[n - 1] = true; // The last suffix ("0") is always type S
+    for (int i = n - 2; i >= 0; i--) {
+      if (input[i] == input[i + 1]) {
+        types[i] = types[i + 1];
+      } else {
+        types[i] = input[i] < input[i + 1];
+      }
+    }
+    return types;
+  }
+
+  private static int[] cstart(int[] freq) {
     int[] cstart = new int[freq.length];
     for (int i = 1; i < cstart.length; i++) cstart[i] = cstart[i - 1] + freq[i - 1];
+    return cstart;
+  }
+
+  private static int[] cend(int[] freq) {
+    int[] cend = new int[freq.length];
+    for (int i = 1; i < cend.length; i++) cend[i] = cend[i - 1] + freq[i];
+    return cend;
+  }
+
+  static void inducedSort(int n, int[] sa, int[] input, int[] freq, boolean[] types) {
+    // Fill in the L suffixes
+    int[] cstart = cstart(freq);
     for (int i = 0; i < n; i++) {
       if (sa[i] <= 0) continue;
       // If S(j - 1) is L
@@ -148,8 +162,7 @@ public class SuffixArrayBuilder {
     }
 
     // Fill in the S suffixes
-    int[] cend = new int[freq.length];
-    for (int i = 1; i < cend.length; i++) cend[i] = cend[i - 1] + freq[i];
+    int[] cend = cend(freq);
     for (int i = n - 1; i >= 0; i--) {
       if (sa[i] <= 0) continue;
       // If S(i - 1) is type S
