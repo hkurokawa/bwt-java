@@ -2,6 +2,7 @@ package net.hydrakecat;
 
 import java.util.Arrays;
 import java.util.Random;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 
@@ -37,6 +38,15 @@ class SuffixArrayBuilderTest {
     int[] actual = SuffixArrayBuilder.build("mmiissiissiippii");
 
     assertArrayEquals(new int[] {15, 14, 10, 6, 2, 11, 7, 3, 1, 0, 13, 12, 9, 5, 8, 4}, actual);
+  }
+
+  @Test
+  @Disabled("Not fixed yet")
+  public void build_babababb() {
+    String input = "babababb";
+    int[] actual = SuffixArrayBuilder.build(input);
+
+    assertArrayEquals(new int[] {1, 3, 5, 7, 0, 2, 4, 6}, actual);
   }
 
   @Test
