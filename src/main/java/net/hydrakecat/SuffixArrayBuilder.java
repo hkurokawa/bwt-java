@@ -3,10 +3,8 @@ package net.hydrakecat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SuffixArrayBuilder {
@@ -79,18 +77,14 @@ public class SuffixArrayBuilder {
 
     // Now LMS-substrings are completely sorted.
     // Construct a string that represents a concatenated LMS-substrings.
-    Set<Integer> lmsSet = new HashSet<>(lms);
-    int[] lmsOrder = new int[n];
-    Arrays.fill(lmsOrder, -1);
-    for (int i = 0; i < lms.size(); i++) {
-      lmsOrder[lms.get(i)] = i;
-    }
+    HashMap<Integer, Integer> lmsOrder = new HashMap<>();
+    for (int i = 0; i < lms.size(); i++) lmsOrder.put(lms.get(i), i);
     int[] lmsStr = new int[lms.size()];
     {
       int i = 0;
       for (int suffix : sa) {
-        if (lmsSet.contains(suffix)) {
-          lmsStr[lmsOrder[suffix]] = i;
+        if (lmsOrder.containsKey(suffix)) {
+          lmsStr[lmsOrder.get(suffix)] = i;
           i++;
         }
       }
