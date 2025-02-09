@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class SuffixArrayBuilder {
-  /**
-   * Builds the suffix array for the given {@code str}.
-   *
-   * @param str a string the suffix array is built for
-   * @return the suffix array for the provided string
-   */
+/**
+ * Builds the suffix array for the given string.
+ */
+public final class SuffixArrayBuilder {
+  private SuffixArrayBuilder() {
+  }
+
   public static int[] build(CharSequence str) {
     // This takes O(m log(m)) where m is the size of the unique characters in `str`.
     // Generally, m << n and it can be ignored.
