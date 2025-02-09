@@ -33,11 +33,8 @@ public class SuffixArrayBuilder {
   // Receives the input that consists of a set of integers [0..numUniqueChars] and returns the
   // suffix array for it.
   static int[] suffixArray(int[] in, int numUniqueChars) {
-    if (in.length == 0) {
-      return new int[] {};
-    }
-    if (in.length == 1) {
-      return new int[] {0};
+    if (in.length == numUniqueChars) {
+      return binSort(in);
     }
     // Increase the size by 1 for the sentinel char (0).
     int n = in.length + 1;
@@ -121,6 +118,15 @@ public class SuffixArrayBuilder {
     int[] ret = new int[n - 1];
     System.arraycopy(sa, 1, ret, 0, n - 1);
     return ret;
+  }
+
+  // Do a bin-sort assuming all the characters are different from each other.
+  private static int[] binSort(int[] input) {
+    int[] sa = new int[input.length];
+    for (int i = 0; i < input.length; i++) {
+      sa[input[i]] = i;
+    }
+    return sa;
   }
 
   // Returns whether array[astart..aend] and array[bstart..bend] are equal.
