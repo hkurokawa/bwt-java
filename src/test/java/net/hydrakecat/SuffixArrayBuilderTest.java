@@ -48,6 +48,33 @@ class SuffixArrayBuilderTest {
   }
 
   @Test
+  public void build_thousandAs() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("a".repeat(1_000));
+    int[] actual = SuffixArrayBuilder.build(sb.toString());
+    int[] expected = buildSuffixArrayNaive(sb.toString());
+
+    assertArrayEquals(expected, actual,
+        "Suffix array for the input string [" + sb + "] do not match");
+  }
+
+  @Test
+  public void build_randomTwoAlphabets() {
+    Random random = new Random();
+    for (int i = 0; i < 10; i++) {
+      StringBuilder sb = new StringBuilder();
+      for (int j = 0; j < 100; j++) {
+        sb.append((char) (random.nextInt('b' - 'a' + 1) + 'a'));
+      }
+      int[] actual = SuffixArrayBuilder.build(sb.toString());
+      int[] expected = buildSuffixArrayNaive(sb.toString());
+
+      assertArrayEquals(expected, actual,
+          "Suffix array for the input string [" + sb + "] do not match");
+    }
+  }
+
+  @Test
   public void build_randomLowerAlphabet() {
     Random random = new Random();
     for (int i = 0; i < 10; i++) {
