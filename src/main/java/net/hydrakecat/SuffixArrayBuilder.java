@@ -75,21 +75,31 @@ public class SuffixArrayBuilder {
     // Do an induced sorting with the bin-sorted LMS
     inducedSort(n, sa, input, freq, types);
 
-    // Now LMS-substrings are completely sorted.
+    // Now LMS-substrings are sorted.
     // Construct a string that represents a concatenated LMS-substrings.
     HashMap<Integer, Integer> lmsOrder = new HashMap<>();
     for (int i = 0; i < lms.size(); i++) lmsOrder.put(lms.get(i), i);
     int[] lmsStr = new int[lms.size()];
+    // The smallest LMS-substring is always the sentinel char (0)
+    // and does not match the previous one, so start with -1.
+    int alphabet = -1;
     {
-      int i = 0;
-      for (int suffix : sa) {
-        if (lmsOrder.containsKey(suffix)) {
-          lmsStr[lmsOrder.get(suffix)] = i;
-          i++;
+      int prevStart = -1, prevEnd = -1;
+      for (int j = 0; j < n; j++) {
+        int curStart = sa[j];
+        if (lmsOrder.containsKey(curStart)) {
+          int order = lmsOrder.get(curStart);
+          int curEnd = order == lms.size() - 1 ? n : (lms.get(order + 1) + 1);
+          if (!equals(input, prevStart, prevEnd, curStart, curEnd)) {
+            alphabet++;
+          }
+          lmsStr[order] = alphabet;
+          prevStart = curStart;
+          prevEnd = curEnd;
         }
       }
     }
-    int[] lmsSa = suffixArray(lmsStr, lms.size());
+    int[] lmsSa = suffixArray(lmsStr, alphabet + 1);
 
     // Put the LMS in the suffix array making sure they are sorted
     sa = new int[n];
@@ -111,6 +121,16 @@ public class SuffixArrayBuilder {
     int[] ret = new int[n - 1];
     System.arraycopy(sa, 1, ret, 0, n - 1);
     return ret;
+  }
+
+  // Returns whether array[astart..aend] and array[bstart..bend] are equal.
+  // astart and bstart are inclusive and aend and bend are supposed to be exclusive.
+  private static boolean equals(int[] array, int astart, int aend, int bstart, int bend) {
+    if (aend - astart != bend - bstart) return false;
+    for (int i = 0; i < aend - astart; i++) {
+      if (array[astart + i] != array[bstart + i]) return false;
+    }
+    return true;
   }
 
   private static boolean[] types(int n, int[] input) {
