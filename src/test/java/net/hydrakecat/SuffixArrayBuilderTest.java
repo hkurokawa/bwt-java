@@ -114,6 +114,16 @@ class SuffixArrayBuilderTest {
   @EnabledIfEnvironmentVariable(named = "benchmark", matches = "true")
   public void build_benchmark() {
     Random random = new Random();
+    // Warm up
+    for (int i = 0; i < 10; i++) {
+      StringBuilder sb = new StringBuilder();
+      for (int j = 0; j < 100; j++) {
+        sb.append((char) (random.nextInt('z' - 'A' + 1) + 'A'));
+      }
+      SuffixArrayBuilder.build(sb.toString());
+    }
+
+    // Benchmark
     for (int t = 10; t <= 1_000_000; t *= 10) {
       long sumElapsedTime = 0;
       for (int i = 0; i < 10; i++) {
